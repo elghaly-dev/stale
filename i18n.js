@@ -5,6 +5,20 @@
   var LANGS = ["en", "ar", "ru", "zh"];
   var BASE = "https://stale.elghaly.dev/";
 
+  // English HTML fragments (static only — never read from the DOM into innerHTML).
+  var EN_HTML = {
+    lim2:
+      "Measures slot lag with <code>getSlot</code> at <code>processed</code> commitment. It does not measure the age of account data, quotes, or any other answer.",
+    lim3:
+      "Lag in milliseconds is slots × 400&nbsp;ms, an estimate from the nominal slot time, not a measured duration.",
+    lim5:
+      "The default reference, <code>api.mainnet-beta.solana.com</code>, is rate-limited. A refused or slow call never produces FRESH. It can still end in STALE when at least two earlier samples, answered by both endpoints, already proved the lag; the verdict line then says <code>degraded=true</code> and prints <code>lag=unknown</code> if the last sample went unanswered.",
+    lim7:
+      "Read-only proxy — <code>sendTransaction</code> and <code>requestAirdrop</code> are refused in any letter case, and a request that names its method twice or in two spellings is refused before it is forwarded.",
+    lim8:
+      "The proxy's <code>X-Stale-*</code> headers describe the latest background sample, not the response they arrive on."
+  };
+
   var T = {
     ar: {
       __title: "stale — تأخر فتحات RPC سولانا، مُقاس",
@@ -113,12 +127,15 @@
   for (i = 0; i < nodes.length; i++) {
     en[nodes[i].getAttribute("data-i18n")] = nodes[i].textContent;
   }
-  for (i = 0; i < htmlNodes.length; i++) {
-    en[htmlNodes[i].getAttribute("data-i18n-html")] = htmlNodes[i].innerHTML;
-  }
 
   var buttons = document.querySelectorAll("#langs [data-lang]");
   var root = document.documentElement;
+
+  function htmlString(lang, key) {
+    if (lang === "en") return EN_HTML[key];
+    var pack = T[lang];
+    return pack && pack[key];
+  }
 
   function set(lang, save) {
     if (LANGS.indexOf(lang) < 0) lang = "en";
@@ -130,8 +147,8 @@
     }
     for (i = 0; i < htmlNodes.length; i++) {
       var hk = htmlNodes[i].getAttribute("data-i18n-html");
-      if (pack[hk] != null) htmlNodes[i].innerHTML = pack[hk];
-      else if (en[hk] != null) htmlNodes[i].innerHTML = en[hk];
+      var html = htmlString(lang, hk);
+      if (html != null) htmlNodes[i].innerHTML = html;
     }
     document.title = pack.__title || en.__title;
     if (metaDesc && (pack.__meta || en.__meta)) {

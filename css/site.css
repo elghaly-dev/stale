@@ -382,8 +382,8 @@ a {
   padding-top: 1.25rem;
   border-top: 1px solid var(--on-bg-line);
   text-align: center;
-  font-size: 0.9rem;
-  color: var(--muted);
+  font-size: 0.95rem;
+  color: var(--text);
 }
 
 .footer p {
@@ -391,12 +391,17 @@ a {
 }
 
 .footer a {
-  color: var(--gold);
-  text-decoration: none;
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.45);
 }
 
 .footer a:hover {
-  text-decoration: underline;
+  text-decoration-color: var(--text);
+}
+
+.lic-badges a {
+  color: var(--text);
 }
 
 .footer__nav {

@@ -1,4 +1,4 @@
-/* page-menu.js — the "Ask Claude | ⌄" button at the top of a content page.
+/* page-menu.js — "Ask Claude | ⌄" and "Ask ChatGPT" at the top of a content page.
  *
  * One split button: the main half opens this page in Claude; the ⌄ half
  * opens a menu with Copy page, View as Markdown, Open in ChatGPT and Open in
@@ -18,16 +18,18 @@
 
   // 44px tall: a full touch target, the size of the buttons beside it.
   var CSS =
+    ".pm-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;align-items:stretch;max-width:100%}" +
     ".pm{position:relative;display:inline-flex;align-items:stretch;min-height:44px;" +
-    "border:1px solid rgba(127,127,127,.45);border-radius:14px;font-size:1rem;line-height:1.2;" +
-    "font-weight:600;background:rgba(127,127,127,.06)}" +
+    "border:1px solid var(--line-2,rgba(127,127,127,.45));border-radius:14px;font-size:1rem;line-height:1.2;" +
+    "font-weight:600;background:var(--card-2,rgba(127,127,127,.06));color:var(--text,inherit)}" +
+    ".pm--solo .pm-main{border-radius:13px}" +
     ".pm-main,.pm-more>summary{display:inline-flex;align-items:center;justify-content:center;" +
     "color:inherit;cursor:pointer;-webkit-user-select:none;user-select:none;white-space:nowrap}" +
     // Logical corners: the browser picks the outer edge from the text
     // direction, so a language switch to Arabic needs no script to follow it.
     ".pm-main{gap:.55rem;padding:0 1.1rem;border-start-start-radius:13px;" +
     "border-end-start-radius:13px;text-decoration:none}" +
-    ".pm-more{display:flex;border-inline-start:1px solid rgba(127,127,127,.45)}" +
+    ".pm-more{display:flex;border-inline-start:1px solid var(--line-2,rgba(127,127,127,.45))}" +
     ".pm-more>summary{list-style:none;width:44px;border-start-end-radius:13px;" +
     "border-end-end-radius:13px}" +
     ".pm-more>summary::-webkit-details-marker{display:none}" +
@@ -36,7 +38,7 @@
     ".pm-ico{width:18px;height:18px;flex:none}" +
     ".pm-more[open] .pm-chev{transform:rotate(180deg)}" +
     ".pm-panel{position:absolute;inset-inline-end:0;top:calc(100% + 6px);z-index:60;width:17rem;" +
-    "max-width:calc(100vw - 32px);padding:.35rem;border:1px solid rgba(127,127,127,.45);" +
+    "max-width:calc(100vw - 32px);padding:.35rem;border:1px solid var(--line-2,rgba(127,127,127,.45));" +
     "border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.38);text-align:start;font-weight:500}" +
     ".pm-panel a,.pm-panel button{display:flex;flex-direction:column;justify-content:center;" +
     "gap:.15rem;width:100%;min-height:44px;margin:0;padding:.5rem .75rem;border:0;" +
@@ -436,20 +438,24 @@
   // ── render ──────────────────────────────────────────────────────────────
   function claudeUrl(q) { return "https://claude.ai/new?q=" + q; }
 
-  // The ⌄ menu: everything except Claude, which is the button itself.
+  function chatgptUrl(q) { return "https://chatgpt.com/?q=" + q; }
+
+  // The ⌄ menu on Claude: copy, Markdown, Cursor (ChatGPT is its own button).
   var ITEMS = [
     { act: "copy", label: "Copy page", sub: "Markdown for AI tools" },
     { act: "md", label: "View as Markdown", sub: "Plain text" },
-    { href: function (q) { return "https://chatgpt.com/?q=" + q; }, label: "Open in ChatGPT" },
     { href: function (q) { return "https://cursor.com/link/prompt?text=" + q; }, label: "Open in Cursor" }
   ];
 
   function build(slot) {
     var q = encodeURIComponent(prompt());
+    var row = document.createElement("div");
+    row.className = "pm-row";
+
     var box = document.createElement("div");
     box.className = "pm";
     box.setAttribute("role", "group");
-    box.setAttribute("aria-label", "Ask AI about this page");
+    box.setAttribute("aria-label", "Ask Claude about this page");
 
     var main = document.createElement("a");
     main.className = "pm-main";
@@ -461,7 +467,7 @@
     var details = document.createElement("details");
     details.className = "pm-more";
     var summary = document.createElement("summary");
-    summary.setAttribute("aria-label", "More AI options: copy page, Markdown, ChatGPT, Cursor");
+    summary.setAttribute("aria-label", "More AI options: copy page, Markdown, Cursor");
     summary.innerHTML = CHEV;
     var panel = document.createElement("div");
     panel.className = "pm-panel";
@@ -494,12 +500,25 @@
     });
 
     details.appendChild(summary);
-    // The panel hangs off the whole button (.pm is the positioned box), so
-    // it lines up with the button's edge rather than the ⌄ half.
     details.appendChild(panel);
     box.appendChild(main);
     box.appendChild(details);
-    slot.appendChild(box);
+
+    var gptBox = document.createElement("div");
+    gptBox.className = "pm pm--solo";
+    gptBox.setAttribute("role", "group");
+    gptBox.setAttribute("aria-label", "Ask ChatGPT about this page");
+    var gptMain = document.createElement("a");
+    gptMain.className = "pm-main";
+    gptMain.href = chatgptUrl(q);
+    gptMain.target = "_blank";
+    gptMain.rel = "noopener noreferrer";
+    gptMain.innerHTML = SPARK + "<span>Ask ChatGPT</span>";
+    gptBox.appendChild(gptMain);
+
+    row.appendChild(box);
+    row.appendChild(gptBox);
+    slot.appendChild(row);
     slot.appendChild(live);
 
     details.addEventListener("toggle", function () {

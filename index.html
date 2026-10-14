@@ -1,234 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="description" content="stale — how many slots a Solana RPC trails a reference endpoint. Read-only slot lag checker and proxy. MIT.">
-  <meta name="theme-color" content="#0b1214">
+  <meta name="theme-color" content="#5a4fc0">
   <meta property="og:title" content="stale — Solana RPC slot lag, measured">
   <meta property="og:description" content="stale compares a Solana RPC's getSlot with a reference endpoint and says FRESH, STALE or UNKNOWN.">
   <meta property="og:url" content="https://stale.elghaly.dev/">
   <link rel="canonical" href="https://stale.elghaly.dev/">
+  <link rel="alternate" hreflang="en" href="https://stale.elghaly.dev/?lang=en">
+  <link rel="alternate" hreflang="ar" href="https://stale.elghaly.dev/?lang=ar">
+  <link rel="alternate" hreflang="ru" href="https://stale.elghaly.dev/?lang=ru">
+  <link rel="alternate" hreflang="zh-Hans" href="https://stale.elghaly.dev/?lang=zh">
+  <link rel="alternate" hreflang="x-default" href="https://stale.elghaly.dev/">
   <title>stale — Solana RPC slot lag, measured</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --ink: #0b1214;
-      --ink-soft: #121a19;
-      --gold: #2ee6c7;
-      --gold-dim: rgba(46, 230, 199, 0.22);
-      --text: #e8fbf6;
-      --text-muted: #9ab3ad;
-      --font-serif: "Instrument Serif", Georgia, serif;
-      --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-      --max-width: 36rem;
-      --status-fresh: #6b9e78;
-      --status-stale: #c97a62;
-      --status-unknown: #9ab3ad;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html {
-      scroll-behavior: smooth;
-      -webkit-text-size-adjust: 100%;
-    }
-
-    body {
-      min-height: 100dvh;
-      background: var(--ink);
-      background-image:
-        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(46, 230, 199, 0.08), transparent),
-        radial-gradient(ellipse 60% 40% at 100% 100%, rgba(46, 230, 199, 0.04), transparent);
-      color: var(--text);
-      font-family: var(--font-sans);
-      font-size: 1rem;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
-
-    .wrap {
-      width: min(var(--max-width), calc(100% - 32px));
-      margin: 0 auto;
-      padding: 24px 0 48px;
-    }
-
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      padding: 10px 16px;
-      background: rgba(11, 18, 20, 0.92);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--gold-dim);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-      color: inherit;
-    }
-
-    .smark {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
-      border: 1px solid var(--gold-dim);
-      color: var(--gold);
-      font-weight: 600;
-      font-size: 14px;
-    }
-    /* The letter is CSS, so the link's visible text is "STALE" and its name "stale home". */
-    .smark::before {
-      content: "S";
-    }
-
-    .sword {
-      font-weight: 600;
-      font-size: 14px;
-      letter-spacing: 0.22em;
-      background: linear-gradient(135deg, #d8fff4 0%, #6fe0c4 44%, #9b7dff 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .signs {
-      text-align: center;
-      font-size: 14px;
-      opacity: 0.7;
-      margin: 12px 0 0;
-    }
-
-    .hero {
-      text-align: center;
-      margin: 28px 0 36px;
-    }
-
-    .hero__title {
-      font-family: var(--font-serif);
-      font-size: clamp(2.4rem, 10vw, 3.2rem);
-      font-weight: 400;
-      letter-spacing: -0.02em;
-      margin-bottom: 12px;
-    }
-
-    .hero__tag {
-      font-size: 1.05rem;
-      color: var(--text-muted);
-      max-width: 28rem;
-      margin: 0 auto;
-    }
-
-    .section {
-      margin-bottom: 32px;
-    }
-
-    .section__label {
-      font-family: var(--font-serif);
-      font-size: 1.35rem;
-      margin-bottom: 10px;
-      color: var(--gold);
-    }
-
-    .section p, .section li {
-      color: var(--text-muted);
-      margin-bottom: 10px;
-    }
-
-    .section ul {
-      padding-left: 1.2rem;
-    }
-
-    .badge {
-      display: inline-block;
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      border-radius: 999px;
-      border: 1px solid var(--gold-dim);
-      color: var(--gold);
-      margin-bottom: 8px;
-    }
-
-    .code-block {
-      background: var(--ink-soft);
-      border: 1px solid var(--gold-dim);
-      border-radius: 12px;
-      padding: 14px 16px;
-      overflow-x: auto;
-      font-family: ui-monospace, "SF Mono", Menlo, monospace;
-      font-size: 0.82rem;
-      line-height: 1.5;
-      color: var(--text);
-      max-width: 100%;
-      word-break: break-word;
-      white-space: pre-wrap;
-    }
-
-    .output .verdict-fresh { color: var(--status-fresh); }
-    .output .verdict-stale { color: var(--status-stale); }
-
-    .stat-grid {
-      display: grid;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .stat {
-      background: var(--ink-soft);
-      border: 1px solid var(--gold-dim);
-      border-radius: 12px;
-      padding: 12px 14px;
-    }
-
-    .stat__label {
-      font-size: 0.75rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-
-    .stat__value {
-      font-family: var(--font-serif);
-      font-size: 1.4rem;
-      color: var(--text);
-    }
-
-    .footer {
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 1px solid var(--gold-dim);
-      text-align: center;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .footer a {
-      color: var(--gold);
-      text-decoration: none;
-    }
-
-    .footer a:hover { text-decoration: underline; }
-
-    @media (max-width: 390px) {
-      .wrap { width: calc(100% - 24px); }
-      .code-block { font-size: 0.75rem; padding: 12px; }
-      .hero__title { font-size: 2.1rem; }
-    }
-  </style>
+  <link rel="preload" href="/fonts/outfit-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/outfit-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/site.css">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="stale">
   <meta property="og:image" content="https://stale.elghaly.dev/og.png">
@@ -243,31 +32,41 @@
 <style id="lic-badges-css">.lic-badges{margin:.75rem 0 0;font-size:.75rem;line-height:1.2}.lic-badges>a,.lic-badges>span{display:inline-flex;align-items:center;min-height:24px;margin:.2rem .15rem;padding:0 .6rem;border:1px solid currentColor;border-radius:999px;color:inherit;vertical-align:middle}.lic-badges>a{text-decoration:underline;text-underline-offset:2px}.lic-badges>span{text-decoration:none}</style>
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="/" aria-label="stale home">
-      <span class="smark" aria-hidden="true"></span>
-      <span class="sword">STALE</span>
-    </a>
+  <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+
+  <header class="nav">
+    <div class="nav__in">
+      <a class="stale-brand" href="/" aria-label="stale home">
+        <span class="smark" aria-hidden="true"></span>
+        <span class="sword">STALE</span>
+      </a>
+      <div class="lang-switch" id="langs" role="group" aria-label="Language" data-md-skip>
+        <button type="button" class="lang-btn" data-lang="en" lang="en" aria-pressed="true">English</button>
+        <button type="button" class="lang-btn" data-lang="ar" lang="ar" aria-pressed="false">العربية</button>
+        <button type="button" class="lang-btn" data-lang="ru" lang="ru" aria-pressed="false">Русский</button>
+        <button type="button" class="lang-btn" data-lang="zh" lang="zh-Hans" aria-pressed="false">中文</button>
+      </div>
+    </div>
   </header>
 
   <p class="signs" aria-hidden="true">✝️🧿🪬</p>
 
-  <div class="wrap">
-    <main>
-    <header class="hero">
-      <div class="page-menu" data-page-menu style="display:flex;justify-content:flex-end;min-height:46px;margin:0 0 .5rem"></div>
-      <h1 class="hero__title">stale</h1>
-      <p class="hero__tag">How many slots is your Solana RPC behind a reference endpoint? stale measures it once a second — and says UNKNOWN when it cannot tell.</p>
-    </header>
+  <div class="page-wrap">
+    <main id="main">
+      <header class="phero">
+        <div class="page-menu" data-page-menu></div>
+        <h1 class="phero__title">stale</h1>
+        <p class="phero__tag" data-i18n="hero_tag">How many slots is your Solana RPC behind a reference endpoint? stale measures it once a second — and says UNKNOWN when it cannot tell.</p>
+      </header>
 
-      <section class="section" id="install">
-        <h2 class="section__label">Install</h2>
+      <section class="section panel" id="install">
+        <h2 class="section__label" data-i18n="install_h">Install</h2>
         <pre class="code-block"><code>go install github.com/Alarm2024/stale/cmd/stale@latest</code></pre>
       </section>
 
-      <section class="section" id="example">
-        <span class="badge">Synthetic</span>
-        <h2 class="section__label">Example output</h2>
+      <section class="section panel" id="example">
+        <span class="badge" data-i18n="example_badge">Synthetic</span>
+        <h2 class="section__label" data-i18n="example_h">Example output</h2>
         <pre class="code-block output"><code>stale check https://rpc.example.com ref=https://api.mainnet-beta.solana.com max_lag=5 for=10s
 target=450106684 ref=450106712 lag=28 slots (11200 ms) advanced=no
 target=450106684 ref=450106716 lag=32 slots (12800 ms) advanced=no
@@ -275,52 +74,58 @@ target=450106684 ref=450106720 lag=36 slots (14400 ms) advanced=no
 verdict=<span class="verdict-stale">STALE</span> target_slot=450106684 ref_slot=450106720 lag=36 slots (14400 ms) target_advanced=false ref_behind=false degraded=false</code></pre>
       </section>
 
-      <section class="section" id="why">
-        <span class="badge">From our bot's own logs · 2026-09-24 · not measured by stale</span>
-        <h2 class="section__label">Why we built it</h2>
-        <p>Our own trading bot labelled every hop-1 quote it priced in half an hour "fresh" — 283 of 283. The ages it logged beside that word ran from four to eight seconds. The label was our code's, not any provider's, and it was wrong: the bot called a quote fresh because it was cached, without checking how old it was. We found it by reading the bot's own logs and judging the word by the number next to it. stale is that check, made into a tool you can point at any RPC.</p>
-        <p>stale did not produce the numbers below — they are quote ages our bot wrote to its log, in milliseconds, over half an hour of scans. A stale run reports something else: lag in slots against a reference endpoint.</p>
+      <section class="section panel" id="why">
+        <span class="badge" data-i18n="why_badge">From our bot's own logs · 2026-09-24 · not measured by stale</span>
+        <h2 class="section__label" data-i18n="why_h">Why we built it</h2>
+        <p data-i18n="why_p1">Our own trading bot labelled every hop-1 quote it priced in half an hour "fresh" — 283 of 283. The ages it logged beside that word ran from four to eight seconds. The label was our code's, not any provider's, and it was wrong: the bot called a quote fresh because it was cached, without checking how old it was. We found it by reading the bot's own logs and judging the word by the number next to it. stale is that check, made into a tool you can point at any RPC.</p>
+        <p data-i18n="why_p2">stale did not produce the numbers below — they are quote ages our bot wrote to its log, in milliseconds, over half an hour of scans. A stale run reports something else: lag in slots against a reference endpoint.</p>
         <div class="stat-grid">
           <div class="stat">
-            <div class="stat__label">Quotes our bot labelled fresh</div>
+            <div class="stat__label" data-i18n="stat1">Quotes our bot labelled fresh</div>
             <div class="stat__value">283 of 283</div>
           </div>
           <div class="stat">
-            <div class="stat__label">Median logged age</div>
+            <div class="stat__label" data-i18n="stat2">Median logged age</div>
             <div class="stat__value">4636 ms</div>
           </div>
           <div class="stat">
-            <div class="stat__label">Max logged age</div>
+            <div class="stat__label" data-i18n="stat3">Max logged age</div>
             <div class="stat__value">7807 ms</div>
           </div>
           <div class="stat">
-            <div class="stat__label">Limit we set</div>
+            <div class="stat__label" data-i18n="stat4">Limit we set</div>
             <div class="stat__value">2000 ms</div>
           </div>
         </div>
       </section>
 
-      <section class="section" id="limits">
-        <h2 class="section__label">Limits</h2>
+      <section class="section panel" id="limits">
+        <h2 class="section__label" data-i18n="limits_h">Limits</h2>
         <ul>
-          <li>Compares against one reference — if both endpoints lag equally, stale cannot tell.</li>
-          <li>Measures slot lag with <code>getSlot</code> at <code>processed</code> commitment. It does not measure the age of account data, quotes, or any other answer.</li>
-          <li>Lag in milliseconds is slots × 400&nbsp;ms, an estimate from the nominal slot time, not a measured duration.</li>
-          <li>The verdict judges lag on the last sample of the window. A target that trailed and then caught up by the end reads FRESH.</li>
-          <li>The default reference, <code>api.mainnet-beta.solana.com</code>, is rate-limited. A refused or slow call never produces FRESH. It can still end in STALE when at least two earlier samples, answered by both endpoints, already proved the lag; the verdict line then says <code>degraded=true</code> and prints <code>lag=unknown</code> if the last sample went unanswered.</li>
-          <li>An endpoint measured against itself is refused — lag against yourself is always zero.</li>
-          <li>Read-only proxy — <code>sendTransaction</code> and <code>requestAirdrop</code> are refused in any letter case, and a request that names its method twice or in two spellings is refused before it is forwarded.</li>
-          <li>The proxy's <code>X-Stale-*</code> headers describe the latest background sample, not the response they arrive on.</li>
-          <li>WebSocket fan-out waits for v0.2.</li>
+          <li data-i18n="lim1">Compares against one reference — if both endpoints lag equally, stale cannot tell.</li>
+          <li data-i18n-html="lim2">Measures slot lag with <code>getSlot</code> at <code>processed</code> commitment. It does not measure the age of account data, quotes, or any other answer.</li>
+          <li data-i18n-html="lim3">Lag in milliseconds is slots × 400&nbsp;ms, an estimate from the nominal slot time, not a measured duration.</li>
+          <li data-i18n="lim4">The verdict judges lag on the last sample of the window. A target that trailed and then caught up by the end reads FRESH.</li>
+          <li data-i18n-html="lim5">The default reference, <code>api.mainnet-beta.solana.com</code>, is rate-limited. A refused or slow call never produces FRESH. It can still end in STALE when at least two earlier samples, answered by both endpoints, already proved the lag; the verdict line then says <code>degraded=true</code> and prints <code>lag=unknown</code> if the last sample went unanswered.</li>
+          <li data-i18n="lim6">An endpoint measured against itself is refused — lag against yourself is always zero.</li>
+          <li data-i18n-html="lim7">Read-only proxy — <code>sendTransaction</code> and <code>requestAirdrop</code> are refused in any letter case, and a request that names its method twice or in two spellings is refused before it is forwarded.</li>
+          <li data-i18n-html="lim8">The proxy's <code>X-Stale-*</code> headers describe the latest background sample, not the response they arrive on.</li>
+          <li data-i18n="lim9">WebSocket fan-out waits for v0.2.</li>
         </ul>
       </section>
     </main>
 
     <footer class="footer">
-      <p>MIT · <a href="https://github.com/Alarm2024/stale">GitHub</a> · No keys, no wallet, read-only</p>
-    <p class="lic-badges"><a href="https://creativecommons.org/licenses/by/4.0/" rel="license">© elghaly · CC BY 4.0</a> <a href="https://github.com/Alarm2024/stale/blob/main/LICENSE">Code: MIT</a> <a href="https://github.com/Alarm2024">Open source</a></p>
+      <p class="footer__nav">
+        MIT · <a href="https://github.com/Alarm2024/stale">GitHub</a> · <span data-i18n="footer_keys">No keys, no wallet, read-only</span>
+        · <a href="https://chatting.elghaly.dev/">Chatting</a>
+        · <a href="https://elghaly.dev/">elghaly.dev</a>
+      </p>
+      <p data-i18n="footer_contact">Email first: support@elghaly.dev. Calls only by appointment.</p>
+      <p class="lic-badges"><a href="https://creativecommons.org/licenses/by/4.0/" rel="license">© elghaly · CC BY 4.0</a> <a href="https://github.com/Alarm2024/stale/blob/main/LICENSE">Code: MIT</a> <a href="https://github.com/Alarm2024">Open source</a></p>
     </footer>
   </div>
-<script src="/page-menu.js" defer></script>
+  <script src="/i18n.js" defer></script>
+  <script src="/page-menu.js" defer></script>
 </body>
 </html>

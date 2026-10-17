@@ -1,0 +1,13 @@
+name: site-check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: House rules (HTML)
+        run: python3 scripts/check_site_rules.py

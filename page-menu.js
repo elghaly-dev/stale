@@ -1,9 +1,9 @@
-/* page-menu.js — the "Ask Claude | ⌄" button at the top of a content page.
+/* page-menu.js — the "Ask ChatGPT | ⌄" button at the top of a content page.
  *
- * One split button: the main half opens this page in Claude; the ⌄ half
- * opens a menu with Copy page, View as Markdown, Open in ChatGPT and Open in
- * Cursor. Plain JS. No tracking, no cookies, no network calls: the Markdown
- * is built from the page in this tab, so it is always the page as it is now.
+ * One split button: the main half opens this page in ChatGPT; the ⌄ half
+ * opens a menu with Copy page. Plain JS. No tracking, no
+ * cookies, no network calls: the Markdown is built from the page in this tab,
+ * so it is always the page as it is now.
  *
  * Use: put <div class="page-menu" data-page-menu></div> where the button
  * goes (reserve 44px of height inline, so nothing moves when it fills in),
@@ -434,14 +434,11 @@
   }
 
   // ── render ──────────────────────────────────────────────────────────────
-  function claudeUrl(q) { return "https://claude.ai/new?q=" + q; }
+  function chatgptUrl(q) { return "https://chatgpt.com/?q=" + q; }
 
-  // The ⌄ menu: everything except Claude, which is the button itself.
+  // The ⌄ menu: Copy. ChatGPT is the button itself.
   var ITEMS = [
-    { act: "copy", label: "Copy page", sub: "Markdown for AI tools" },
-    { act: "md", label: "View as Markdown", sub: "Plain text" },
-    { href: function (q) { return "https://chatgpt.com/?q=" + q; }, label: "Open in ChatGPT" },
-    { href: function (q) { return "https://cursor.com/link/prompt?text=" + q; }, label: "Open in Cursor" }
+    { act: "copy", label: "Copy page", sub: "Markdown for AI tools" }
   ];
 
   function build(slot) {
@@ -453,15 +450,15 @@
 
     var main = document.createElement("a");
     main.className = "pm-main";
-    main.href = claudeUrl(q);
+    main.href = chatgptUrl(q);
     main.target = "_blank";
     main.rel = "noopener noreferrer";
-    main.innerHTML = SPARK + "<span>Ask Claude</span>";
+    main.innerHTML = SPARK + "<span>Ask ChatGPT</span>";
 
     var details = document.createElement("details");
     details.className = "pm-more";
     var summary = document.createElement("summary");
-    summary.setAttribute("aria-label", "More AI options: copy page, Markdown, ChatGPT, Cursor");
+    summary.setAttribute("aria-label", "More options: copy page");
     summary.innerHTML = CHEV;
     var panel = document.createElement("div");
     panel.className = "pm-panel";

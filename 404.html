@@ -1,39 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex">
-  <meta name="theme-color" content="#0b1214">
+  <meta name="theme-color" content="#5a4fc0">
   <title>Not found · stale</title>
+  <link rel="alternate" hreflang="en" href="https://stale.elghaly.dev/404.html?lang=en">
+  <link rel="alternate" hreflang="ar" href="https://stale.elghaly.dev/404.html?lang=ar">
+  <link rel="alternate" hreflang="ru" href="https://stale.elghaly.dev/404.html?lang=ru">
+  <link rel="alternate" hreflang="zh-Hans" href="https://stale.elghaly.dev/404.html?lang=zh">
+  <link rel="stylesheet" href="/css/site.css">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <style>
-    :root{--bg:#0b1214;--accent:#2ee6c7;--muted:#9ab3ad}
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{background:var(--bg);color:var(--accent)}
-    body{min-height:100vh;display:flex;flex-direction:column;font:16px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
-    header{padding:20px}
-    .home-mark{display:inline-flex;align-items:center;gap:10px;color:var(--muted);text-decoration:none;font-size:12px;letter-spacing:.24em;text-transform:uppercase}
-    .home-mark img{width:36px;height:36px;border-radius:9px;display:block}
-    main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px 20px 64px}
-    .code{font-size:12px;letter-spacing:.3em;color:var(--muted);margin-bottom:12px}
-    h1{font-size:clamp(1.6rem,6vw,2.4rem);font-weight:600;line-height:1.2;margin-bottom:24px;max-width:22ch}
-    .home{display:inline-block;padding:11px 20px;border-radius:999px;border:1px solid var(--accent);color:var(--accent);text-decoration:none;font-weight:600}
-    .home:hover,.home:focus-visible{background:var(--accent);color:var(--bg)}
-    a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-    footer{padding:20px;text-align:center;font-size:13px;color:var(--muted)}
-    footer a{color:var(--muted)}
+    .nf-main{min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem 1rem 3rem}
+    .nf-code{font-size:.75rem;letter-spacing:.28em;color:var(--muted);margin-bottom:.75rem}
+    .nf-title{font-size:clamp(1.5rem,5vw,2rem);font-weight:700;margin:0 0 1.25rem;max-width:22ch}
+    .nf-home{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 1.25rem;border-radius:999px;border:1px solid var(--gold);color:var(--gold);font-weight:600;text-decoration:none}
+    .nf-home:hover{background:var(--gold);color:var(--gold-ink)}
   </style>
 </head>
 <body>
-  <header><a class="home-mark" href="/"><img src="/favicon.svg" alt="" width="36" height="36"><span>stale</span></a></header>
-  <main>
-    <p class="code">404</p>
-    <h1>No such page.</h1>
-    <a class="home" href="/">Back to stale</a>
+  <header class="nav">
+    <div class="nav__in">
+      <a class="stale-brand" href="/" aria-label="stale home">
+        <span class="smark" aria-hidden="true"></span>
+        <span class="sword">STALE</span>
+      </a>
+      <div class="lang-switch" id="langs" role="group" aria-label="Language" data-md-skip>
+        <button type="button" class="lang-btn" data-lang="en" lang="en" aria-pressed="true">English</button>
+        <button type="button" class="lang-btn" data-lang="ar" lang="ar" aria-pressed="false">العربية</button>
+        <button type="button" class="lang-btn" data-lang="ru" lang="ru" aria-pressed="false">Русский</button>
+        <button type="button" class="lang-btn" data-lang="zh" lang="zh-Hans" aria-pressed="false">中文</button>
+      </div>
+    </div>
+  </header>
+  <main class="nf-main page-wrap" id="main">
+    <p class="nf-code" data-i18n="notfound_code">404</p>
+    <h1 class="nf-title" data-i18n="notfound_h">No such page.</h1>
+    <a class="nf-home" href="/" data-i18n="notfound_home">Back to stale</a>
   </main>
-  <footer><a href="https://elghaly.dev/">elghaly.dev</a></footer>
+  <footer class="footer">
+    <p data-i18n="footer_contact">Email first: support@elghaly.dev. Calls only by appointment.</p>
+    <p>elghaly, LLC</p>
+  </footer>
+  <script src="/i18n.js" defer></script>
 </body>
 </html>

@@ -75,7 +75,7 @@ verdict=<span class="verdict-stale">STALE</span> target_slot=450106684 ref_slot=
       </section>
 
       <section class="section panel" id="why">
-        <span class="badge" data-i18n="why_badge">From our bot's own logs · 2026-09-24 · not measured by stale</span>
+        <span class="badge" data-i18n="why_badge">From our bot's own logs · not measured by stale</span>
         <h2 class="section__label" data-i18n="why_h">Why we built it</h2>
         <p data-i18n="why_p1">Our own trading bot labelled every hop-1 quote it priced in half an hour "fresh" — 283 of 283. The ages it logged beside that word ran from four to eight seconds. The label was our code's, not any provider's, and it was wrong: the bot called a quote fresh because it was cached, without checking how old it was. We found it by reading the bot's own logs and judging the word by the number next to it. stale is that check, made into a tool you can point at any RPC.</p>
         <p data-i18n="why_p2">stale did not produce the numbers below — they are quote ages our bot wrote to its log, in milliseconds, over half an hour of scans. A stale run reports something else: lag in slots against a reference endpoint.</p>

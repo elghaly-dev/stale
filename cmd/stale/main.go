@@ -8,8 +8,10 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
+	"time"
 
 	"github.com/Alarm2024/stale/internal/check"
+	"github.com/Alarm2024/stale/internal/compare"
 	"github.com/Alarm2024/stale/internal/measure"
 	"github.com/Alarm2024/stale/internal/redact"
 	"github.com/Alarm2024/stale/internal/serve"
@@ -29,6 +31,8 @@ func main() {
 		os.Exit(runCheck(os.Args[2:]))
 	case "serve":
 		os.Exit(runServe(os.Args[2:]))
+	case "compare":
+		os.Exit(runCompare(os.Args[2:]))
 	case "version", "--version", "-v":
 		fmt.Println("stale", version)
 	case "help", "-h", "--help":
@@ -46,6 +50,7 @@ func usage() {
 Usage:
   stale check <rpc-url> --ref <other-rpc-url> [--max-lag-slots N] [--for DURATION]
   stale serve --upstream URL --ref <other-rpc-url> [--listen ADDR]
+  stale compare [--every DURATION] [--rounds N]
   stale version
 
 Commands:
@@ -53,6 +58,9 @@ Commands:
           and print a verdict. Lag in ms is slots x 400, an estimate.
   serve   Read-only JSON-RPC proxy. Every response it forwards from the
           upstream carries X-Stale-* headers from the latest background sample.
+  compare Read-only side-by-side probe of STALE_A and STALE_B from the
+          environment: getHealth and getSlot every --every for --rounds,
+          then a summary. Output uses labels and 8-hex fingerprints only.
 
 The reference defaults to https://api.mainnet-beta.solana.com; a target equal
 to its reference is refused, since lag against yourself is always 0.
@@ -89,6 +97,44 @@ func runCheck(args []string) int {
 		return measure.VerdictUnknown.ExitCode()
 	}
 	return verdict.ExitCode()
+}
+
+func runCompare(args []string) int {
+	fs := flag.NewFlagSet("compare", flag.ExitOnError)
+	every := fs.Duration("every", time.Second, "interval between rounds")
+	rounds := fs.Int("rounds", 10, "number of rounds before printing summary")
+	_ = fs.Parse(args)
+
+	aURL := os.Getenv("STALE_A")
+	bURL := os.Getenv("STALE_B")
+	if aURL == "" || bURL == "" {
+		fmt.Fprintln(os.Stderr, "compare requires STALE_A and STALE_B environment variables")
+		return 2
+	}
+	labelA := os.Getenv("STALE_A_LABEL")
+	if labelA == "" {
+		labelA = "A"
+	}
+	labelB := os.Getenv("STALE_B_LABEL")
+	if labelB == "" {
+		labelB = "B"
+	}
+
+	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer cancel()
+
+	err := compare.Run(ctx, compare.Options{
+		A:      compare.Endpoint{Label: labelA, URL: aURL},
+		B:      compare.Endpoint{Label: labelB, URL: bURL},
+		Every:  *every,
+		Rounds: *rounds,
+		Out:    os.Stdout,
+	})
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "compare error: %v\n", err)
+		return 2
+	}
+	return 0
 }
 
 func runServe(args []string) int {

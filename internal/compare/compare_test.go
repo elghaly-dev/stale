@@ -164,8 +164,8 @@ func TestRunTwoRoundsSummary(t *testing.T) {
 	if !strings.Contains(text, "method=getHealth") || !strings.Contains(text, "method=getSlot") {
 		t.Fatalf("missing probe lines:\n%s", text)
 	}
-	if !strings.Contains(text, "summary rounds=2") {
-		t.Fatalf("missing summary:\n%s", text)
+	if !strings.Contains(text, "endpoint label=primary") || !strings.Contains(text, "getSlot_N=") {
+		t.Fatalf("missing endpoint summary:\n%s", text)
 	}
 	if strings.Contains(text, "http://") || strings.Contains(text, "127.0.0.1") {
 		t.Fatalf("output leaked endpoint URL:\n%s", text)

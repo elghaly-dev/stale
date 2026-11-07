@@ -81,6 +81,10 @@ func runCheck(args []string) int {
 	maxLag := fs.Int64("max-lag-slots", measure.DefaultMaxLag, "maximum acceptable lag in slots")
 	forDur := fs.Duration("for", measure.DefaultSampleFor, "sampling window")
 	_ = fs.Parse(flagArgs)
+	if msg := leftoverArgMessage("check", fs); msg != "" {
+		fmt.Fprintln(os.Stderr, msg)
+		return 2
+	}
 
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
@@ -144,6 +148,10 @@ func runServe(args []string) int {
 	ref := fs.String("ref", measure.DefaultRefURL, "reference RPC URL")
 	maxLag := fs.Int64("max-lag-slots", measure.DefaultMaxLag, "maximum acceptable lag in slots")
 	_ = fs.Parse(args)
+	if msg := leftoverArgMessage("serve", fs); msg != "" {
+		fmt.Fprintln(os.Stderr, msg)
+		return 2
+	}
 
 	if *upstream == "" {
 		fmt.Fprintln(os.Stderr, "serve requires --upstream URL")
@@ -174,6 +182,44 @@ func runServe(args []string) int {
 
 // splitRPCURL pulls the RPC endpoint out before flag parsing so hostnames like
 // mainnet-beta.solana.com are not mistaken for flags.
+var knownCheckFlags = map[string]struct{}{
+	"ref": {}, "max-lag-slots": {}, "for": {},
+}
+
+var knownServeFlags = map[string]struct{}{
+	"listen": {}, "upstream": {}, "ref": {}, "max-lag-slots": {},
+}
+
+// leftoverArgMessage reports the first positional argument left after flag.Parse.
+func leftoverArgMessage(command string, fs *flag.FlagSet) string {
+	if fs.NArg() == 0 {
+		return ""
+	}
+	raw := fs.Arg(0)
+	norm := normalizeLeftoverArg(raw)
+	var known map[string]struct{}
+	switch command {
+	case "check":
+		known = knownCheckFlags
+	case "serve":
+		known = knownServeFlags
+	default:
+		return fmt.Sprintf("%s: unexpected argument %q", command, raw)
+	}
+	if _, ok := known[norm]; ok {
+		return fmt.Sprintf("%s: unexpected argument %q — did you mean --%s?", command, raw, norm)
+	}
+	return fmt.Sprintf("%s: unexpected argument %q", command, raw)
+}
+
+func normalizeLeftoverArg(arg string) string {
+	s := strings.TrimLeft(arg, "-")
+	if i := strings.IndexByte(s, '='); i >= 0 {
+		s = s[:i]
+	}
+	return strings.ReplaceAll(s, "_", "-")
+}
+
 func splitRPCURL(args []string) (string, []string) {
 	var target string
 	var rest []string

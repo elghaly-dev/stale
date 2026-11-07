@@ -172,16 +172,6 @@ func rpcRequest(method string) map[string]any {
 	return req
 }
 
-func slotLag(self, peer uint64, selfOK, peerOK bool) (lag int64, known bool) {
-	if !selfOK || !peerOK {
-		return 0, false
-	}
-	if peer < self {
-		return 0, true
-	}
-	return int64(peer - self), true
-}
-
 func formatErrClass(cls string) string {
 	if cls == "" {
 		return "-"

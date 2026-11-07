@@ -3,11 +3,14 @@ package compare_test
 import (
 	"context"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 
 	"github.com/Alarm2024/stale/internal/compare"
 )
+
+const callsPerCompareRound int32 = 4
 
 func TestFastVersusSlowLatencyPercentiles(t *testing.T) {
 	aURL := "http://fast"
@@ -114,17 +117,18 @@ func Test429StormCounted(t *testing.T) {
 func Test401StopsProbing(t *testing.T) {
 	aURL := "http://a"
 	bURL := "http://b"
-	rounds := 0
+	var calls atomic.Int32
 
+	var out strings.Builder
 	err := compare.Run(context.Background(), compare.Options{
 		A:      compare.Endpoint{Label: "A", URL: aURL},
 		B:      compare.Endpoint{Label: "B", URL: bURL},
 		Rounds: 5,
 		Every:  time.Millisecond,
-		Out:    ioDiscard{},
+		Out:    &out,
 		Sleep:  func(context.Context, time.Duration) error { return nil },
 		Call: func(ctx context.Context, endpoint, method string) compare.CallResult {
-			rounds++
+			calls.Add(1)
 			if endpoint == aURL && method == "getSlot" {
 				return compare.CallResult{HTTPStatus: 401, ErrorClass: "401"}
 			}
@@ -137,20 +141,30 @@ func Test401StopsProbing(t *testing.T) {
 	if !strings.Contains(err.Error(), "401") {
 		t.Fatalf("err = %v", err)
 	}
-	if rounds != 4 { // round 1: 4 parallel calls
-		t.Fatalf("rounds executed calls = %d, want 4 (single round then stop)", rounds)
+	if n := calls.Load(); n != callsPerCompareRound {
+		t.Fatalf("probe calls = %d, want %d (single round then stop)", n, callsPerCompareRound)
+	}
+	text := out.String()
+	if strings.Contains(text, "round=2 ") {
+		t.Fatalf("probing continued past first round:\n%s", text)
+	}
+	if !strings.Contains(text, "err=401") || !strings.Contains(text, "definitions ") {
+		t.Fatalf("missing 401 round line or endpoint report:\n%s", text)
 	}
 }
 
 func Test403StopsProbing(t *testing.T) {
+	var calls atomic.Int32
+	var out strings.Builder
 	err := compare.Run(context.Background(), compare.Options{
 		A:      compare.Endpoint{Label: "A", URL: "http://a"},
 		B:      compare.Endpoint{Label: "B", URL: "http://b"},
 		Rounds: 3,
 		Every:  time.Millisecond,
-		Out:    ioDiscard{},
+		Out:    &out,
 		Sleep:  func(context.Context, time.Duration) error { return nil },
 		Call: func(ctx context.Context, endpoint, method string) compare.CallResult {
+			calls.Add(1)
 			if method == "getHealth" && endpoint == "http://b" {
 				return compare.CallResult{HTTPStatus: 403, ErrorClass: "403"}
 			}
@@ -159,6 +173,12 @@ func Test403StopsProbing(t *testing.T) {
 	})
 	if err == nil || !strings.Contains(err.Error(), "403") {
 		t.Fatalf("expected 403 stop, err=%v", err)
+	}
+	if n := calls.Load(); n != callsPerCompareRound {
+		t.Fatalf("probe calls = %d, want %d", n, callsPerCompareRound)
+	}
+	if strings.Contains(out.String(), "round=2 ") {
+		t.Fatalf("probing continued past first round")
 	}
 }
 
@@ -189,7 +209,3 @@ func TestInsufficientSuccessfulSamplesShowDash(t *testing.T) {
 		t.Fatalf("5xx errors per endpoint:\n%s", text)
 	}
 }
-
-type ioDiscard struct{}
-
-func (ioDiscard) Write(p []byte) (int, error) { return len(p), nil }

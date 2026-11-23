@@ -30,6 +30,50 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <style id="lic-badges-css">.lic-badges{margin:.75rem 0 0;font-size:.75rem;line-height:1.2}.lic-badges>a,.lic-badges>span{display:inline-flex;align-items:center;min-height:24px;margin:.2rem .15rem;padding:0 .6rem;border:1px solid currentColor;border-radius:999px;color:inherit;vertical-align:middle}.lic-badges>a{text-decoration:underline;text-underline-offset:2px}.lic-badges>span{text-decoration:none}</style>
+
+<style>
+/* ported verbatim from elghaly.dev EN */
+:root {
+  --night: #07080c;
+  --night-2: #0d1120;
+  --tile: #10131f;
+  --line: rgba(196, 161, 236, .22);
+  --lilac: #c4a1ec;
+  --lilac-soft: #e6d4fa;
+  --lapis: #2a4cb3;
+  --turquoise: #34b8ac;
+  --ivory: #efe8d8;
+  --muted: #a39b88;
+  --radius: 18px;
+  color-scheme: dark;
+}
+.mark { margin: 18px 0 0; /* Room above and below so no glyph is ever clipped by the text clip. */ padding: .12em .08em .18em; font-family: "Cinzel", Georgia, serif; font-style: normal; font-weight: 700; font-size: clamp(3rem, 13.5vw, 6rem); line-height: 1.15; letter-spacing: .06em; overflow: visible; background: linear-gradient(100deg, var(--gold-soft) 0%, var(--gold) 45%, #9f7fd1 100%); -webkit-background-clip: text; background-clip: text; -webkit-box-decoration-break: clone; box-decoration-break: clone; color: transparent; }
+.signs { margin: 14px 0 0; font-size: 1.1rem; letter-spacing: .3em; }
+/* The signs always read left to right. */ .signs, .team__signs { direction: ltr; unicode-bidi: isolate; }
+.footer .signs { font-size: 1rem; letter-spacing: .25em; }
+.rule { width: 120px; height: 1px; margin: 26px auto 0; border: 0; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+.heard__title { margin: 0 0 20px; text-align: center; font-weight: 500; font-size: clamp(1.2rem, 5vw, 1.6rem); letter-spacing: .01em; }
+.stops{list-style:none;margin:0;padding:30px 0 10px;position:relative}
+.st{position:relative;margin:0 0 54px;display:flex}
+.st.L{justify-content:flex-end;padding-left:14%}
+.st.R{justify-content:flex-start;padding-right:14%}
+.st.L .node{left:0%;transform:translateX(14px)}
+.st.R .node{right:0%;transform:translateX(-14px)}
+.st.on .node{background:var(--gold-soft);box-shadow:0 0 0 5px rgba(196,161,236,.18),0 0 22px 8px rgba(185,148,239,.75)}
+.st.portrait .card{flex-direction:column;text-align:center;padding:14px 14px 18px}
+.st.portrait .card img{width:100%;height:auto;aspect-ratio:3/4;border-radius:14px;object-position:center top}
+.js .st .card{opacity:0;transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+.js .st.L .card{transform:translateX(50px)}
+.js .st.R .card{transform:translateX(-50px)}
+.js .st.on .card{opacity:1;transform:none}
+.js .st .card{opacity:1!important;transform:none!important;transition:none}
+.st.textonly .card{padding:18px 16px}
+)(); </script> <p>elghaly</p> <p class="lic-badges"><a href="https://creativecommons.org/licenses/by/4.0/" rel="license">© elghaly · CC BY 4.0</a></p> </footer> <script src="/page-menu.js" defer></script> <script> document.documentElement.classList.add('js'); const rm=matchMedia('(prefers-reduced-motion: reduce)').matches; const road=document.querySelector('.road'),stops=[...document.querySelectorAll('.st')],bed=document.getElementById('bed'),line=document.getElementById('line');let len=1; function draw(){const r=road.getBoundingClientRect();const pts=stops.map(s=>{const n=s.querySelector('.node').getBoundingClientRect();return[n.left+n.width/2-r.left,n.top+n.height/2-r.top]}
+.node{position:absolute;top:34px;width:18px;height:18px;margin-top:-9px;border-radius:50%;background:#1a1430;border:2px solid var(--gold);transition:.7s}
+.node{transition:none}
+.card{width:100%;background:linear-gradient(160deg,rgba(26,20,48,.9),rgba(13,17,32,.92));border:1px solid var(--line);border-radius:var(--radius);padding:12px;display:flex;gap:12px;align-items:center;box-shadow:0 0 28px rgba(159,127,209,.14)}
+.card img{width:76px;height:76px;border-radius:14px;object-fit:cover;flex:none;border:1px solid rgba(196,161,236,.4)}
+</style>
 </head>
 <body>
   <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
@@ -113,7 +157,24 @@ verdict=<span class="verdict-stale">STALE</span> target_slot=450106684 ref_slot=
           <li data-i18n="lim9">WebSocket fan-out waits for v0.2.</li>
         </ul>
       </section>
-    </main>
+    <h1 class="mark" lang="en" dir="ltr">elghaly</h1>
+<p class="signs" aria-hidden="true">✝️ 🧿 🪬</p>
+<hr class="rule">
+<svg class="road__svg" aria-hidden="true"><path class="bed" id="bed"/><path class="line" id="line"/></svg>
+      <ol class="stops" id="stops" aria-label="Our projects">
+        <li class="st L"><i class="node"></i><div class="card"><img src="https://elghaly.dev/assets/emblem-35-480.webp" width="480" height="480" alt="35" loading="lazy" decoding="async"><div class="txt"><h3>35</h3><span class="pill p-pv">Private</span><p>A first look at the 35 project.</p><a class="go" href="https://35.elghaly.dev/" rel="noopener noreferrer">Open 35</a></div></div></li>
+        <li class="st R"><i class="node"></i><div class="card"><img src="https://elghaly.dev/assets/emblem-iris-480.webp" width="480" height="480" alt="Iris" loading="lazy" decoding="async"><div class="txt"><h3>Iris</h3><span class="pill p-on">Active</span><p>A clear view, made simple.</p><a class="go" href="https://iris-35.elghaly.dev/" rel="noopener noreferrer">Open Iris</a></div></div></li>
+        <li class="st L"><i class="node"></i><div class="card"><img src="https://elghaly.dev/assets/emblem-plumb-480.webp" width="480" height="480" alt="Plumb" loading="lazy" decoding="async"><div class="txt"><h3>Plumb</h3><span class="pill p-on">Active</span><p>Solana desk insight.</p><a class="go" href="https://plumb-35.elghaly.dev/" rel="noopener noreferrer">Open Plumb</a></div></div></li>
+        <li class="st R"><i class="node"></i><div class="card"><img src="https://elghaly.dev/assets/emblem-quay-480.webp" width="480" height="480" alt="Quay" loading="lazy" decoding="async"><div class="txt"><h3>Quay</h3><span class="pill p-on">Active</span><p>A storefront for our goods.</p><a class="go" href="https://quay-35.elghaly.dev/" rel="noopener noreferrer">Open Quay</a></div></div></li>
+        <li class="st L"><i class="node"></i><div class="card"><img src="https://elghaly.dev/assets/emblem-stale-480.webp" width="480" height="480" alt="Stale" loading="lazy" decoding="async"><div class="txt"><h3>Stale</h3><span class="pill p-os">Open Source</span><p>Spot what has gone stale.</p><a class="go" href="https://stale.elghaly.dev/" rel="noopener noreferrer">Open Stale</a> <a class="go go--gh" href="https://github.com/elghaly-dev/stale" rel="noopener noreferrer">GitHub</a></div></div></li>
+        <li class="st R"><i class="node"></i><div class="card"><img src="https://elghaly.dev/assets/emblem-glance-480.webp" width="480" height="480" alt="Glance" loading="lazy" decoding="async"><div class="txt"><h3>Glance</h3><span class="pill p-os">Open Source</span><p>Market view at a glance.</p><a class="go" href="https://glance.elghaly.dev/" rel="noopener noreferrer">Open Glance</a> <a class="go go--gh" href="https://github.com/elghaly-dev/glance" rel="noopener noreferrer">GitHub</a></div></div></li>
+        <li class="st L"><i class="node"></i><div class="card"><img src="https://elghaly.dev/assets/emblem-stocklana-480.webp" width="480" height="480" alt="Stocklana" loading="lazy" decoding="async"><div class="txt"><h3>Stocklana</h3><span class="pill p-on">Active</span><p>Stock insight on Solana.</p><a class="go" href="https://stocklana.elghaly.dev/" rel="noopener noreferrer">Open Stocklana</a></div></div></li>
+        <li class="st R"><i class="node"></i><div class="card"><img src="https://elghaly.dev/assets/emblem-ra-480.webp?v=3" width="480" height="480" alt="رع" loading="lazy" decoding="async"><div class="txt"><h3 dir="rtl" lang="ar">رع</h3><span class="pill p-soon">Coming soon</span><p>Watch the earth from above.</p><span class="go go--off" aria-disabled="true">Coming soon</span></div></div></li>
+        <li class="st L"><i class="node"></i><div class="card"><img src="https://elghaly.dev/assets/emblem-satar-480.webp?v=3" width="480" height="480" alt="ستار" loading="lazy" decoding="async"><div class="txt"><h3 dir="rtl" lang="ar">ستار</h3><span class="pill p-soon">Coming soon</span><p>Private messaging and prayer companion.</p><span class="go go--off" aria-disabled="true">Coming soon</span></div></div></li>
+        <li class="st R portrait"><i class="node"></i><div class="card"><img src="https://elghaly.dev/assets/anubis-2-480.webp" width="480" height="480" alt="Anubis" loading="lazy" decoding="async"><div class="txt"><h3>Anubis</h3><span class="pill p-soon">Coming soon</span><p>The guardian of the road.</p><span class="go go--off" aria-disabled="true">Coming soon</span></div></div></li>
+        <li class="st L textonly"><i class="node"></i><div class="card"><div class="txt"><h3><span lang="ar" dir="rtl">حتحور</span> · <span lang="hi">हाथोर</span></h3><p><span lang="ar" dir="rtl">المحطة الجاية</span> · <span lang="hi">अगला पड़ाव</span></p><span class="go go--off" aria-disabled="true"><span lang="ar" dir="rtl">قريباً</span> · <span lang="hi">जल्द आ रहा है</span></span></div></div></li>
+      </ol>
+</main>
 
     <footer class="footer">
       <p class="footer__nav">

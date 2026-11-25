@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="stale — how many slots a Solana RPC trails a reference endpoint. Read-only slot lag checker and proxy. MIT.">
+  <meta name="description" content="stale — how many slots a Solana RPC trails a reference endpoint. Slot lag checker and a proxy that never writes.">
   <meta name="theme-color" content="#5a4fc0">
   <meta property="og:title" content="stale — Solana RPC slot lag, measured">
   <meta property="og:description" content="stale compares a Solana RPC's getSlot with a reference endpoint and says FRESH, STALE or UNKNOWN.">
@@ -152,7 +152,7 @@ verdict=<span class="verdict-stale">STALE</span> target_slot=450106684 ref_slot=
           <li data-i18n="lim4">The verdict judges lag on the last sample of the window. A target that trailed and then caught up by the end reads FRESH.</li>
           <li data-i18n-html="lim5">The default reference, <code>api.mainnet-beta.solana.com</code>, is rate-limited. A refused or slow call never produces FRESH. It can still end in STALE when at least two earlier samples, answered by both endpoints, already proved the lag; the verdict line then says <code>degraded=true</code> and prints <code>lag=unknown</code> if the last sample went unanswered.</li>
           <li data-i18n="lim6">An endpoint measured against itself is refused — lag against yourself is always zero.</li>
-          <li data-i18n-html="lim7">Read-only proxy — <code>sendTransaction</code> and <code>requestAirdrop</code> are refused in any letter case, and a request that names its method twice or in two spellings is refused before it is forwarded.</li>
+          <li data-i18n-html="lim7">The proxy never writes — <code>sendTransaction</code> and <code>requestAirdrop</code> are refused in any letter case, and a request that names its method twice or in two spellings is refused before it is forwarded.</li>
           <li data-i18n-html="lim8">The proxy's <code>X-Stale-*</code> headers describe the latest background sample, not the response they arrive on.</li>
           <li data-i18n="lim9">WebSocket fan-out waits for v0.2.</li>
         </ul>

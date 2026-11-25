@@ -14,7 +14,7 @@
     lim5:
       "The default reference, <code>api.mainnet-beta.solana.com</code>, is rate-limited. A refused or slow call never produces FRESH. It can still end in STALE when at least two earlier samples, answered by both endpoints, already proved the lag; the verdict line then says <code>degraded=true</code> and prints <code>lag=unknown</code> if the last sample went unanswered.",
     lim7:
-      "Read-only proxy — <code>sendTransaction</code> and <code>requestAirdrop</code> are refused in any letter case, and a request that names its method twice or in two spellings is refused before it is forwarded.",
+      "The proxy never writes — <code>sendTransaction</code> and <code>requestAirdrop</code> are refused in any letter case, and a request that names its method twice or in two spellings is refused before it is forwarded.",
     lim8:
       "The proxy's <code>X-Stale-*</code> headers describe the latest background sample, not the response they arrive on."
   };
@@ -22,7 +22,7 @@
   var T = {
     ar: {
       __title: "stale — تأخر فتحات RPC سولانا، مُقاس",
-      __meta: "stale — كم فتحة يتأخر RPC سولانا عن نقطة مرجعية. فحص تأخر الفتحات للقراءة فقط ووكيل. MIT.",
+      __meta: "stale — كم فتحة يتأخر RPC سولانا عن نقطة مرجعية. فحص تأخر الفتحات، ووكيل لا يكتب أبدًا.",
       skip: "تخطّ إلى المحتوى",
       hero_tag: "كم فتحة يتأخر RPC سولانا لديك عن نقطة مرجعية؟ stale يقيس ذلك مرة كل ثانية — ويقول UNKNOWN عندما لا يستطيع الحكم.",
       install_h: "تثبيت",
@@ -43,10 +43,10 @@
       lim4: "الحكم يقيّم التأخر في آخر عينة من النافذة. هدف كان متأخراً ثم لحق في النهاية يقرأ FRESH.",
       lim5: "المرجع الافتراضي <code>api.mainnet-beta.solana.com</code> محدود المعدّل. استدعاء مرفوض أو بطيء لا ينتج FRESH أبداً. قد ينتهي STALE عندما أثبتت عينتان سابقتان على الأقل، أجاب عليهما الطرفان، التأخر؛ يقول سطر الحكم <code>degraded=true</code> ويطبع <code>lag=unknown</code> إذا لم تُجَب العينة الأخيرة.",
       lim6: "نقطة نهاية مقيسة ضد نفسها تُرفض — التأخر ضد نفسك دائماً صفر.",
-      lim7: "وكيل للقراءة فقط — <code>sendTransaction</code> و <code>requestAirdrop</code> مرفوضان بأي حالة أحرف، وطلب يسمّي method مرتين أو بإملائين يُرفض قبل إعادة التوجيه.",
+      lim7: "وكيل لا يكتب أبدًا — <code>sendTransaction</code> و <code>requestAirdrop</code> مرفوضان بأي حالة أحرف، وطلب يسمّي method مرتين أو بإملائين يُرفض قبل إعادة التوجيه.",
       lim8: "رؤوس <code>X-Stale-*</code> للوكيل تصف آخر عينة خلفية، وليس الاستجابة التي تصل عليها.",
       lim9: "بث WebSocket ينتظر v0.2.",
-      footer_keys: "لا مفاتيح، لا محفظة، للقراءة فقط",
+      footer_keys: "لا مفاتيح، لا محفظة، لا يكتب شيئًا",
       footer_contact: "Email first: support@elghaly.dev. Calls by appointment.",
       notfound_h: "لا توجد صفحة كهذه.",
       notfound_home: "العودة إلى stale",
@@ -54,7 +54,7 @@
     },
     ru: {
       __title: "stale — отставание слотов RPC Solana, измерено",
-      __meta: "stale — на сколько слотов RPC Solana отстаёт от эталонной точки. Только чтение: проверка отставания слотов и прокси. MIT.",
+      __meta: "stale — на сколько слотов RPC Solana отстаёт от эталонной точки. Проверка отставания слотов и прокси, который никогда не записывает.",
       skip: "Перейти к содержанию",
       hero_tag: "На сколько слотов ваш RPC Solana отстаёт от эталона? stale меряет раз в секунду — и говорит UNKNOWN, когда не может судить.",
       install_h: "Установка",
@@ -75,10 +75,10 @@
       lim4: "Вердикт по отставанию на последней выборке окна. Цель отставала и догнала к концу — FRESH.",
       lim5: "Эталон по умолчанию <code>api.mainnet-beta.solana.com</code> с лимитом. Отказ или медленный вызов никогда не даёт FRESH. Может закончиться STALE, если минимум две более ранние выборки с ответами обоих концов уже доказали отставание; строка вердикта тогда <code>degraded=true</code> и <code>lag=unknown</code>, если последняя выборка без ответа.",
       lim6: "Эндпоинт против самого себя отклоняется — отставание от себя всегда ноль.",
-      lim7: "Прокси только для чтения — <code>sendTransaction</code> и <code>requestAirdrop</code> отклоняются в любом регистре; запрос с method дважды или в двух написаниях отклоняется до проксирования.",
+      lim7: "Прокси никогда не записывает — <code>sendTransaction</code> и <code>requestAirdrop</code> отклоняются в любом регистре; запрос с method дважды или в двух написаниях отклоняется до проксирования.",
       lim8: "Заголовки <code>X-Stale-*</code> прокси описывают последнюю фоновую выборку, а не ответ, на котором они пришли.",
       lim9: "WebSocket fan-out ждёт v0.2.",
-      footer_keys: "без ключей, без кошелька, только чтение",
+      footer_keys: "без ключей, без кошелька, ничего не записывает",
       footer_contact: "Email first: support@elghaly.dev. Calls by appointment.",
       notfound_h: "Такой страницы нет.",
       notfound_home: "Назад к stale",
@@ -86,7 +86,7 @@
     },
     zh: {
       __title: "stale — 测量 Solana RPC 槽位滞后",
-      __meta: "stale — Solana RPC 相对参考端点落后多少槽位。只读槽位滞后检查与代理。MIT。",
+      __meta: "stale — Solana RPC 相对参考端点落后多少槽位。槽位滞后检查与从不写入的代理。",
       skip: "跳到正文",
       hero_tag: "你的 Solana RPC 比参考端点落后多少槽？stale 每秒测量一次 — 无法判断时返回 UNKNOWN。",
       install_h: "安装",
@@ -101,16 +101,16 @@
       stat3: "记录的最大年龄",
       stat4: "我们设定的上限",
       limits_h: "限制",
-      lim1: "只与一个参考比较 — 若两端点同等落后，stale 无法区分。",
+      lim1: "与一个参考端点比较 — 若两端点同等落后，stale 无法区分。",
       lim2: "用 <code>getSlot</code>、<code>processed</code> 承诺测量槽位滞后。不测量账户数据、报价或其他响应的年龄。",
       lim3: "毫秒滞后 = 槽数 × 400&nbsp;ms，来自名义槽时间的估计，非实测时长。",
       lim4: "裁决依据窗口内最后一次采样。目标曾落后但在结束时追上则读为 FRESH。",
       lim5: "默认参考 <code>api.mainnet-beta.solana.com</code> 有速率限制。拒绝或缓慢调用永不产生 FRESH。若至少两次更早采样（两端均有应答）已证明滞后，仍可能 STALE；裁决行 <code>degraded=true</code>，末次采样无应答则 <code>lag=unknown</code>。",
       lim6: "端点不能测量自身 — 相对自己滞后恒为零。",
-      lim7: "只读代理 — <code>sendTransaction</code> 与 <code>requestAirdrop</code> 任意大小写均拒绝；method 重复或两种拼写的请求在转发前拒绝。",
+      lim7: "代理从不写入 — <code>sendTransaction</code> 与 <code>requestAirdrop</code> 任意大小写均拒绝；method 重复或两种拼写的请求在转发前拒绝。",
       lim8: "代理的 <code>X-Stale-*</code> 头描述最新后台采样，而非它们所附的响应。",
       lim9: "WebSocket 扇出等待 v0.2。",
-      footer_keys: "无密钥、无钱包、只读",
+      footer_keys: "无密钥、无钱包、不写入任何内容",
       footer_contact: "Email first: support@elghaly.dev. Calls by appointment.",
       notfound_h: "没有此页面。",
       notfound_home: "返回 stale",

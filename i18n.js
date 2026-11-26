@@ -47,7 +47,7 @@
       lim8: "رؤوس <code>X-Stale-*</code> للوكيل تصف آخر عينة خلفية، وليس الاستجابة التي تصل عليها.",
       lim9: "بث WebSocket ينتظر v0.2.",
       footer_keys: "لا مفاتيح، لا محفظة، لا يكتب شيئًا",
-      footer_contact: "Email first: support@elghaly.dev. Calls by appointment.",
+      footer_contact: "البريد أولًا: ⁦support@elghaly.dev.⁩ الاتصال بموعد مسبق.",
       notfound_h: "لا توجد صفحة كهذه.",
       notfound_home: "العودة إلى stale",
       notfound_code: "404"

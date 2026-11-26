@@ -79,7 +79,7 @@
       lim8: "Заголовки <code>X-Stale-*</code> прокси описывают последнюю фоновую выборку, а не ответ, на котором они пришли.",
       lim9: "WebSocket fan-out ждёт v0.2.",
       footer_keys: "без ключей, без кошелька, ничего не записывает",
-      footer_contact: "Email first: support@elghaly.dev. Calls by appointment.",
+      footer_contact: "Сначала пишите: ⁦support@elghaly.dev.⁩ Звонки по записи.",
       notfound_h: "Такой страницы нет.",
       notfound_home: "Назад к stale",
       notfound_code: "404"
@@ -111,7 +111,7 @@
       lim8: "代理的 <code>X-Stale-*</code> 头描述最新后台采样，而非它们所附的响应。",
       lim9: "WebSocket 扇出等待 v0.2。",
       footer_keys: "无密钥、无钱包、不写入任何内容",
-      footer_contact: "Email first: support@elghaly.dev. Calls by appointment.",
+      footer_contact: "请先发邮件：⁦support@elghaly.dev⁩。电话需预约。",
       notfound_h: "没有此页面。",
       notfound_home: "返回 stale",
       notfound_code: "404"
